@@ -1,4 +1,4 @@
-# voronsky.github.io
+# Catch them Dogs!
 <h3>Digital template assignment repo for CS325 game design</h3>
 
 <p> This contains the A1 game for "Catch them Dogs!". A simple phaser made game which involves the player to catch dogs <br>
