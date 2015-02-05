@@ -247,7 +247,7 @@ function collectStars (player, stars) {
 
     //Add 600 miliseconds			
     clock+=450; //equivalent to 45 seconds
-    var boostTimeText = game.add.text(40, 70,"Time increased by: 45 seconds!", {fontSize: '4px', fill: '#000'});  
+    var boostTimeText = game.add.text(40, 70,"Time increased by: 45 seconds!", {fontSize: '6px', fill: '#000'});  
     //var myText = this.add.tween(arf);
     game.time.events.add(0, function () {
 	game.add.tween(boostTimeText).to({y: 0}, 1500, Phaser.Easing.Linear.None, true);
