@@ -13,7 +13,7 @@ game.load.image('star', 'assets/star.png');
 game.load.image('oneUp','assets/firstaid.png');
 game.load.spritesheet('Dog','assets/Dog.png',50,50);
 game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
-game.load.spritesheet('enemy', 'assets/baddie.png',50, 50);
+game.load.spritesheet('enemy', 'assets/baddie.png',32, 32);
 
 }
 
@@ -27,7 +27,7 @@ var giveLife;
 var stars;
 var score = 0;
 var scoreText;
-var clock = 1000;
+var clock = 2000; //2 minutes in miliseconds
 var clockText;
 var music;
 var cheers;
@@ -89,15 +89,16 @@ function create() {
     //enemies = game.add.group();
     //enemies.enableBody = true;
     //var enemy = enemies.create(game.world.randomX, game.world.randomY, 'enemy');
-    enemy = game.add.sprite(game.world.centerX, game.world.centerY, 'enemy');
+    enemy = game.add.sprite(game.world.randomX, y, 'enemy');
 
     game.physics.arcade.enable(enemy);
     enemy.body.bounce.y = 0.2;
     enemy.body.gravity.y = 400;
     enemy.body.collideWorldBounds = true;
     
-    enemy.animations.add('left',[0],10,true);
+    enemy.animations.add('left',[0,1],10,true);
     enemy.animations.add('right',[2, 3], 10, true);
+    //enemyMove(enemy);
     //enemy.body.bounce.y = 0;
     //enemy.body.gravity.y = 320;
  
@@ -107,7 +108,8 @@ function create() {
     dogs.enableBody = true;
     
     //Adding dog into the game at random X and Y
-    var dog = dogs.create(game.world.randomX, game.world.randomY, 'Dog');
+    var y = randomHeight(); //generate a random height above 150 (ground height)
+    var dog = dogs.create(game.world.randomX, y, 'Dog');
 
 
     //Adding dog physics
@@ -124,13 +126,13 @@ function create() {
     stars.enableBody = true;
 
     //  Here we'll create 12 of them evenly spaced apart
-    var star = stars.create(game.world.randomX + 150, game.world.randomY + 150, 'star');
+    var star = stars.create(game.world.randomX, y, 'star');
     star.body.gravity.y = 400;
     star.body.bounce.y = 0.8;
-    game.time.events.repeat(Phaser.Timer.SECOND*10, 50, resurrectStar, this);
-   
+    game.time.events.repeat(Phaser.Timer.SECOND*5, 500, resurrectStar, this);
+    game.time.events.loop(Phaser.Timer.SECOND, enemyMove, this);
     //  The score
-    scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    scoreText = game.add.text(16, 16, 'Score: '+score, { fontSize: '32px', fill: '#000' });
     clockText = game.add.text(40,40, 'Time: ' + clock, {fontSize: '32px', fill: '#000' });			
 
     //  Our controls.
@@ -150,6 +152,7 @@ function update() {
     game.physics.arcade.overlap(player, dogs, collectDog, null, this);
     //  Checks to see if the player overlaps with any of the stars, if so call the collectStar			
     game.physics.arcade.overlap(player, stars, collectStars, null, this);
+    game.physics.arcade.overlap(player, enemy, playerKill, null, this);
 
     //  Reset the players velocity (movement)
     player.body.velocity.x = 0;
@@ -190,61 +193,109 @@ function update() {
     gameOver();
 
 }
+/*function createEnemy() {
+    var y = randomHeight();
+    enemy = game.add.sprite(game.world.randomX, y, 'enemy');
 
+    game.physics.arcade.enable(enemy);
+    enemy.body.bounce.y = 0.2;
+    enemy.body.gravity.y = 400;
+    enemy.body.collideWorldBounds = true;
+    
+    enemy.animations.add('left',[0,1],10,true);
+    enemy.animations.add('right',[2, 3], 10, true);
+//    enemyMove(enemy);
+ 
+}
+function addEnemy() {
+    var y = randomHeight();
+    createEnemy();
+
+}*/
+function enemyMove() {
+    var x = Math.round(Math.random());
+    if(x == 1) {
+	if(enemy.body.touching.down) {
+	    enemy.body.velocity.y = -200
+	}
+	enemy.animations.play('left');
+	enemy.body.velocity.x = -150
+    }
+    if(x == 0) {
+	    if(enemy.body.touching.down) {
+		enemy.body.velocity.y = -200;
+	    }
+	enemy.animations.play('right');
+	enemy.body.velocity.x = 150;
+    } 
+}
+
+function playerKill (player, enemy) {
+
+    player.kill();
+    isDead = true;
+    restart();
+
+}
 
 function collectDog (player, dogs) {
     
     // Removes the dog from the screen
     dogs.kill();
-	
+    //Add and update the score
+    score+= 10;
+    updateScore(parseInt(score));
+
     // Spawn another one
     resurrectDog();			
 
-    //  Add and update the score
-    score += 10;
-    scoreText.text = 'Score: ' + score;
 
 }
 
 function collectStars (player, stars) {
     //Remove the stars			
     stars.kill();			
-    cheers.volume = 0.1;
+    cheers.volume = 0.01;
     cheers.play();
     //cheers.play();
     //cheers.volume;
 
-    //Add 100 miliseconds			
-    clock+=15;
+    //Add 30 miliseconds			
+    clock+=30;
     clockText.text = ("Time: "+clock);
 }
 			
 function resurrectDog() {
    var thing = dogs.getFirstDead();
+   var y = randomHeight();
 
    if (thing)
    {
      
-      thing.reset(game.world.randomX,game.world.randomY+150);
+      thing.reset(game.world.randomX, y);
 
    }
 }
 
-function resurrectStar() {
+function resurrectStar(stars) {
    var thing = stars.getFirstDead();
-
+   var y = randomHeight();
    if (thing)
    {
      
-      thing.reset(game.world.randomX,game.world.randomY+150);
+      thing.reset(game.world.randomX, y);
 
    }
+
 }
+
 
 function restart() {
     player.reset(32, game.world.height - 150);
     score = 0;
-    clock = 6000;
+    updateScore(parseInt(score));
+    //scoreText.text = 'Score: ' + score;
+    clock = 2000;
     isDead = false;
 }
 
@@ -255,6 +306,15 @@ function updateCounter() {
     }
     clock--;
     clockText.setText("Time: " + clock);
+}
+
+function randomHeight() {
+    var width = 800; //Game width for this one
+    return Math.random()*(width - (game.world.height - 150) + 150);
+}
+
+function updateScore(newScore) {
+   scoreText.setText("Score: "+newScore); 
 }
 
 function gameOver() {
