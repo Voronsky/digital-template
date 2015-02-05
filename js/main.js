@@ -277,7 +277,7 @@ function resurrectDog() {
    }
 }
 
-function resurrectStar(stars) {
+function resurrectStar() {
    var thing = stars.getFirstDead();
    var y = randomHeight();
    if (thing)
