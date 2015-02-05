@@ -41,7 +41,7 @@ function create() {
     music = game.add.audio('nujabes');
     cheers = game.add.audio('cheers');
     jump = game.add.audio('jump');
-    music.volume = 0.1;
+    music.volume = 0.3;
     music.loop = true;
     music.play();
 
