@@ -9,7 +9,7 @@ and score as many points as possible before the timer runs out</p>
 <ul>
 <b>Up - Up arrow</b><br>
 <b>Right - Right arrow</b><br>
-<b>Left - Left Arrow</b>
+<b>Left - Left Arrow</b><br>
 <b>Jump - spacebar</b>
 </ul>
 
@@ -18,6 +18,6 @@ The game objectives is basically to grab as many dogs as possible before the tim
 they will add time to the clock so that you may continue catching the dogs
 
 <h3>Enemies</h3>
-<p>Watch out for these pesky rabbits. if they ram into you, you die and reset!<p>
+<p>Watch out for these pesky rabbits. if they ram into you, you die and reset!</p>
 <h3>Stars</h3>
 <p>Be sure to collect stars when possible, this will increase your game time so that you may be able to get more points!</p>
