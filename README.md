@@ -21,3 +21,10 @@ they will add time to the clock so that you may continue catching the dogs
 <p>Watch out for these pesky rabbits. if they ram into you, you die and reset!</p>
 <h3>Stars</h3>
 <p>Be sure to collect stars when possible, this will increase your game time so that you may be able to get more points!</p>
+
+<h2>Credits</h2>
+<p><b>Song:</b>Nujabes - Afternoon<br>
+<b>Sprites:</b>opengameart.org,deviantart,spritedatabase.net(Maple story dog by Rasudoken) <br>
+<b>Sounds:</b>soundBible.com<br>
+also thanks to all my friends for play testing this prototype!
+</p>
