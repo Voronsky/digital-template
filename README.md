@@ -1,5 +1,5 @@
 # Catch them Dogs!
-<h3>Digital template assignment repo for CS325 game design</h3>
+<h2>Digital template assignment repo for CS325 game design</h2>
 
 <p> This contains the A1 game for "Catch them Dogs!". A simple phaser made game which involves the player to catch dogs <br>
 and score as many points as possible before the timer runs out</p>
@@ -9,7 +9,7 @@ and score as many points as possible before the timer runs out</p>
 <ul>
 <b>Up - Up arrow</b><br>
 <b>Right - Right arrow</b><br>
-<b>Left - Left Arrow</b>
+<b>Left - Left Arrow</b><br>
 <b>Jump - spacebar</b>
 </ul>
 
@@ -17,7 +17,14 @@ and score as many points as possible before the timer runs out</p>
 The game objectives is basically to grab as many dogs as possible before the timer runs out. Be on the look out for stars
 they will add time to the clock so that you may continue catching the dogs
 
-<h1>Enemies</h1>
-<p>Watch out for these pesky rabbits. if they ram into you, you die and reset!<p>
- <h1>Stars</h1>
+<h3>Enemies</h3>
+<p>Watch out for these pesky rabbits. if they ram into you, you die and reset!</p>
+<h3>Stars</h3>
 <p>Be sure to collect stars when possible, this will increase your game time so that you may be able to get more points!</p>
+
+<h2>Credits</h2>
+<p><b>Song:</b>Nujabes - Afternoon<br>
+<b>Sprites:</b>opengameart.org,deviantart,spritedatabase.net(Maple story dog by Rasudoken) <br>
+<b>Sounds:</b>soundBible.com<br>
+also thanks to all my friends for play testing this prototype!
+</p>
