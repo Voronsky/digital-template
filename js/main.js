@@ -1,23 +1,25 @@
 //'use strict';
 
 //Do window.onLoad = function () { var game}:
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(800, 650, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
 
 function preload() {
 
 game.load.audio('nujabes',['assets/audio/nujabes_afternoon.mp3']);
+game.load.audio('cheers',['assets/audio/5_sec_crowd.mp3']);
 game.load.image('sky', 'assets/sky.png');
 game.load.image('ground', 'assets/platform.png');
 game.load.image('star', 'assets/star.png');
 game.load.image('oneUp','assets/firstaid.png');
 game.load.spritesheet('Dog','assets/Dog.png',50,50);
 game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
-game.load.spritesheet('enemy','assets/baddie.png',32,48);
+game.load.spritesheet('enemy', 'assets/baddie.png',50, 50);
 
 }
 
 var player;
 var dogs;
+var enemy;
 var platforms;
 var cursors;
 var enemies;
@@ -25,15 +27,18 @@ var giveLife;
 var stars;
 var score = 0;
 var scoreText;
-var clock = 60000;
+var clock = 1000;
 var clockText;
 var music;
+var cheers;
+var isDead = false;
 
 function create() {
 
     music = game.add.audio('nujabes');
+    cheers = game.add.audio('cheers');
+    music.volume = 0.01;
     music.play();
-    music.volume = 0.5;
 
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -62,6 +67,9 @@ function create() {
 
     ledge = platforms.create(-150, 250, 'ground');
     ledge.body.immovable = true;
+    
+    ledge = platforms.create(500, 150, 'ground');
+    ledge.body.immovable = true;
 
     // The player and its settings
     player = game.add.sprite(32, game.world.height - 150, 'dude');
@@ -78,18 +86,26 @@ function create() {
     player.animations.add('left', [0, 1, 2, 3], 10, true);
     player.animations.add('right', [5, 6, 7, 8], 10, true);
    
-    enemies = game.add.group();
-    enemies.enableBody = true;
-    var enemy = enemies.create(game.world.randomX, game.world.randomY, 'enemy');
+    //enemies = game.add.group();
+    //enemies.enableBody = true;
+    //var enemy = enemies.create(game.world.randomX, game.world.randomY, 'enemy');
+    enemy = game.add.sprite(game.world.centerX, game.world.centerY, 'enemy');
+
+    game.physics.arcade.enable(enemy);
+    enemy.body.bounce.y = 0.2;
+    enemy.body.gravity.y = 400;
+    enemy.body.collideWorldBounds = true;
     
-    enemy.body.bounce.y = 0;
-    enemy.body.gravity.y = 320;
+    enemy.animations.add('left',[0],10,true);
+    enemy.animations.add('right',[2, 3], 10, true);
+    //enemy.body.bounce.y = 0;
+    //enemy.body.gravity.y = 320;
  
     //Adding dog groups
 
     dogs = game.add.group(); 
     dogs.enableBody = true;
-
+    
     //Adding dog into the game at random X and Y
     var dog = dogs.create(game.world.randomX, game.world.randomY, 'Dog');
 
@@ -108,37 +124,27 @@ function create() {
     stars.enableBody = true;
 
     //  Here we'll create 12 of them evenly spaced apart
-    var star = stars.create(game.world.randomX, game.world.randomY, 'star');
-    star.body.gravity.y = 300;
-    star.body.bounce.y = 0.9;
-    game.time.events.repeat(Phaser.Timer.SECOND*30, 50, resurrectStar, this);
-    /*for (var i = 0; i < 12; i++)
-    {
-        //  Create a star inside of the 'stars' group
-        var star = stars.create(game.world.randomX, game.world.randomY, 'star');
+    var star = stars.create(game.world.randomX + 150, game.world.randomY + 150, 'star');
+    star.body.gravity.y = 400;
+    star.body.bounce.y = 0.8;
+    game.time.events.repeat(Phaser.Timer.SECOND*10, 50, resurrectStar, this);
+   
+    //  The score
+    scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    clockText = game.add.text(40,40, 'Time: ' + clock, {fontSize: '32px', fill: '#000' });			
 
-        //  Let gravity do its thing
-        star.body.gravity.y = 300;
-
-        //  This just gives each star a slightly random bounce value
-        star.body.bounce.y = 0.7 + Math.random() * 0.2;
-    }*/
-
-	//  The score
-	scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-	clockText = game.add.text(40,40, 'Time: ' + clock, {fontSize: '32px', fill: '#000' });			
-
-	//  Our controls.
-	cursors = game.input.keyboard.createCursorKeys();
+    //  Our controls.
+    cursors = game.input.keyboard.createCursorKeys();
     
-    }
+}
 
-   function update() {
+function update() {
 
     //  Collide the player and the stars with the platforms
     game.physics.arcade.collide(player, platforms);
     game.physics.arcade.collide(stars, platforms);
     game.physics.arcade.collide(dogs, platforms);
+    game.physics.arcade.collide(enemy, platforms);
 
     //  Checks to see if the player overlaps with any of the dogs, if he does call the collectDog function
     game.physics.arcade.overlap(player, dogs, collectDog, null, this);
@@ -175,10 +181,15 @@ function create() {
     {
         player.body.velocity.y = -350;
     }
+    
+    if(isDead == true) {
 
-    updateCounter();
-
+	restart();
     }
+    updateCounter();
+    gameOver();
+
+}
 
 
 function collectDog (player, dogs) {
@@ -198,9 +209,13 @@ function collectDog (player, dogs) {
 function collectStars (player, stars) {
     //Remove the stars			
     stars.kill();			
+    cheers.volume = 0.1;
+    cheers.play();
+    //cheers.play();
+    //cheers.volume;
 
     //Add 100 miliseconds			
-    clock+=100;
+    clock+=15;
     clockText.text = ("Time: "+clock);
 }
 			
@@ -210,7 +225,7 @@ function resurrectDog() {
    if (thing)
    {
      
-      thing.reset(game.world.randomX,game.world.randomY);
+      thing.reset(game.world.randomX,game.world.randomY+150);
 
    }
 }
@@ -221,12 +236,27 @@ function resurrectStar() {
    if (thing)
    {
      
-      thing.reset(game.world.randomX,game.world.randomY);
+      thing.reset(game.world.randomX,game.world.randomY+150);
 
    }
 }
 
-    function updateCounter() {
+function restart() {
+    player.reset(32, game.world.height - 150);
+    score = 0;
+    clock = 6000;
+    isDead = false;
+}
+
+function updateCounter() {
+    if(clock == 0) {
+	player.kill();
+	isDead = true;
+    }
     clock--;
     clockText.setText("Time: " + clock);
-    }
+}
+
+function gameOver() {
+    
+}
