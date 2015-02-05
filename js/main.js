@@ -1,6 +1,5 @@
 'use strict';
 
-//Do window.onLoad = function () { var game}:
 var game = new Phaser.Game(900, 675, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
 
 function preload() {
@@ -43,6 +42,7 @@ function create() {
     cheers = game.add.audio('cheers');
     jump = game.add.audio('jump');
     music.volume = 0.1;
+    music.loop = true;
     music.play();
 
     //  We're going to be using physics, so enable the Arcade Physics system
