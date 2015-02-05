@@ -31,6 +31,7 @@ var score = 0;
 var scoreText;
 var clock = 2000; //2 minutes in miliseconds
 var clockText;
+var boostText;
 var music;
 var jump;
 var cheers;
@@ -129,7 +130,7 @@ function create() {
     var star = stars.create(game.world.randomX, y, 'star');
     star.body.gravity.y = 400;
     star.body.bounce.y = 0.8;
-    game.time.events.repeat(Phaser.Timer.SECOND*5, 500, resurrectStar, this);
+    game.time.events.repeat(Phaser.Timer.SECOND*20, 500, resurrectStar, this);
     game.time.events.loop(Phaser.Timer.SECOND, enemyMove, this);
     //  The score
     scoreText = game.add.text(16, 16, 'Score: '+ score, { fontSize: '32px', fill: '#000' });
@@ -193,6 +194,7 @@ function update() {
 	restart();
     }
     updateCounter();
+    updateScore(score);
 
 }
 function enemyMove() {
@@ -240,10 +242,18 @@ function collectStars (player, stars) {
     stars.kill();			
     cheers.volume = 0.08;
     cheers.play();
+    
+   
 
-    //Add 45 miliseconds			
-    clock+=45;
-    clockText.text = ("Time: "+clock);
+    //Add 600 miliseconds			
+    clock+=450; //equivalent to 45 seconds
+    var boostTimeText = game.add.text(40, 70,"Time increased by: 45 seconds!", {fontSize: '4px', fill: '#000'});  
+    //var myText = this.add.tween(arf);
+    game.time.events.add(0, function () {
+	game.add.tween(boostTimeText).to({y: 0}, 1500, Phaser.Easing.Linear.None, true);
+	game.add.tween(boostTimeText).to({alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
+	}, this);
+    clockText.setText("Time: "+clock);
 }
 			
 function resurrectDog() {
@@ -294,6 +304,6 @@ function randomHeight() {
     return Math.random()*(width - (game.world.height - 150) + 150);
 }
 
-function updateScore(newScore) {
-   scoreText.setText("Score: "+newScore); 
+function updateScore(score) {
+   scoreText.setText("Score: " + score); 
 }
