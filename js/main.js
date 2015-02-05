@@ -201,14 +201,14 @@ function enemyMove() {
     var x = Math.round(Math.random());
     if(x == 1) {
 	if(enemy.body.touching.down) {
-	    enemy.body.velocity.y = -425;
+	    enemy.body.velocity.y = -455;
 	}
 	enemy.animations.play('left');
 	enemy.body.velocity.x = -150
     }
     if(x == 0) {
 	    if(enemy.body.touching.down) {
-		enemy.body.velocity.y = -425;
+		enemy.body.velocity.y = -455;
 	    }
 	enemy.animations.play('right');
 	enemy.body.velocity.x = 150;
