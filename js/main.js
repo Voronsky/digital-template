@@ -184,7 +184,7 @@ function update() {
     //  Allow the player to jump if they are touching the ground.
     if (cursors.up.isDown && player.body.touching.down)
     {
-	jump.volume =0.9;
+	jump.volume =0.7;
 	jump.play();
         player.body.velocity.y = -425;
     }
