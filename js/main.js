@@ -255,7 +255,7 @@ function collectDog (player, dogs) {
 function collectStars (player, stars) {
     //Remove the stars			
     stars.kill();			
-    cheers.volume = 0.01;
+    cheers.volume = 0.1;
     cheers.play();
     //cheers.play();
     //cheers.volume;
