@@ -3,8 +3,11 @@
 <head>
     <meta charset="utf-8">
     <title>Catch them Dogs!</title>
-    <script src="js/phaser.min.js"></script>
+    <script src="js/phaser.js"></script>
+    <script src="js/boot.js"></script>
+    <script src="js/intro.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/credits.js"></script>
 
 <style>
 body
@@ -16,11 +19,25 @@ body
 {
     margin-top: 10px;
 }
-</style>
 
+</style>
 </head>
 <body>
 <div id="game"></div>
+
+<script type="text/javascript">
+  window.onload = function(){
+      var game = new Phaser.Game(800,600, Phaser.CANVAS, 'game');
+      game.state.add('boot', state.boot);
+      game.state.add('intro', state.intro);
+      game.state.add('main', state.main);
+      game.state.add('credits',state.credits);
+
+  
+      game.state.start('boot');
+
+  }
+</script>
 <div id="readme">
 <h2>Catch them Dogs!</h2>
 <ul>
